@@ -3,11 +3,11 @@ import mysql.connector
 def get_db_connection():
     try:
         db = mysql.connector.connect(
-            host="127.0.0.1",  # localhost if MySQL is on the same machine
-            port= 3307,  # Use the correct port (default is 3306)
-            user="root",  # root user, change if needed
-            password="",  # Your password for root (empty if none)
-            database="savvylingua"  # Make sure this database exists
+            host="127.0.0.1", 
+            port= 3307, 
+            user="root",  
+            password="",  
+            database="savvylingua"  
         )
 
         cursor = db.cursor()
@@ -15,3 +15,6 @@ def get_db_connection():
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
+        
+if __name__ == "__main__":
+    get_db_connection()
