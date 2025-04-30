@@ -1,5 +1,5 @@
 from flask import Flask
-from controllers.document_controller import document_blueprint
+from controllers.controller import document_blueprint
 import os
 
 app = Flask(__name__)

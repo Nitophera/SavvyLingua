@@ -1,4 +1,4 @@
-from config import get_db_connection
+from database import get_db_connection
 
 def insert_document(filename):
     db = get_db_connection()

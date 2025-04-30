@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify, render_template, current_app, send_file
 import os
 import json
-from models.document_model import insert_document, insert_extracted_text, get_text_by_document_id
-from services.ocr_service import call_ocr_api
+from models.model import insert_document, insert_extracted_text, get_text_by_document_id
+from ocr.ocr_api import call_ocr_api
 
 document_blueprint = Blueprint('document_controller', __name__)
 
