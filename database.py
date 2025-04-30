@@ -10,7 +10,7 @@ def get_db_connection():
         database="savvylingua"
     )
 
-def insert_ocr_text(file_path, language="Korean", is_public=True):
+def insert_ocr_text(file_path, language="Korean (Jeju)", is_public=True):
     try:
         db = get_db_connection()
         cursor = db.cursor()
