@@ -7,7 +7,7 @@ def get_db_connection():
             port= 3307,  # Use the correct port (default is 3306)
             user="root",  # root user, change if needed
             password="",  # Your password for root (empty if none)
-            database="savvylinguadb"  # Make sure this database exists
+            database="savvylingua"  # Make sure this database exists
         )
 
         cursor = db.cursor()
