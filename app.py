@@ -2,7 +2,7 @@ from flask import Flask
 from controllers.controller import document_blueprint
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='views')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 app.register_blueprint(document_blueprint)
