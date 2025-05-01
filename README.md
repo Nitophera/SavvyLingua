@@ -50,9 +50,10 @@ This is a simple **Flask web application** that allows users to upload document 
     );
     ```
 
-4. Set your **OCR API key** in `services/ocr_service.py`:
+4. Set Up the `.env` File
+    Create a file named .env in the root directory and add:
     ```python
-    OCR_API_KEY = "your_ocr_space_api_key"
+    OCR_API_KEY=your_ocr_api_key_here
     ```
 
 ## Running the App

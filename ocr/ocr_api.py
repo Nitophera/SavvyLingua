@@ -1,6 +1,9 @@
 import requests
+from dotenv import load_dotenv
+import os
 
-OCR_API_KEY = "your_ocr_space_api_key"
+load_dotenv()
+OCR_API_KEY = os.getenv("OCR_API_KEY")
 
 def call_ocr_api(filepath):
     with open(filepath, 'rb') as f:
