@@ -4,7 +4,7 @@ import os
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
+        host="127.0.0.1",
         port=3307,  
         user="root",
         password="",
@@ -16,8 +16,6 @@ def insert_ocr_text(file_path, language="Korean", is_public=True):
         print(f"File not found: {file_path}")
         return
 
-    cursor = None
-    db = None
     try:
         db = get_db_connection()
         cursor = db.cursor()
