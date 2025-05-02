@@ -7,7 +7,7 @@ def get_db_connection():
         host="127.0.0.1",
         port=3307,  
         user="root",
-        password="root",
+        password="",
         database="savvylingua"
     )
 
@@ -16,13 +16,8 @@ def insert_ocr_text(file_path, language="Korean", is_public=True):
         print(f"File not found: {file_path}")
         return
 
-    db = None
-    cursor = None
     try:
         db = get_db_connection()
-        if db is None:
-            print("Failed to connect to the database.")
-            return
         cursor = db.cursor()
 
         with open(file_path, "r", encoding="utf-8") as file:
