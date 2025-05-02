@@ -9,8 +9,14 @@ services:
       MYSQL_DATABASE: savvydb
     ports:
       - "3307:3306"
+    networks:
+      - savvy_network
     volumes:
       - mysql_data:/var/lib/mysql
 
 volumes:
   mysql_data:
+
+networks:
+  savvy_network:
+    driver: bridge
