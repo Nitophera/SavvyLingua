@@ -8,7 +8,7 @@ def get_db_connection():
         port=3307,  
         user="root",
         password="root",
-        database="savvylingua"
+        database="savvydb"
     )
 
 def insert_ocr_text(file_path, language="Korean", is_public=True):

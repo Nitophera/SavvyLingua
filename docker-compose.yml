@@ -6,7 +6,7 @@ services:
     container_name: mysql-savvylingua
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: savvydb
+      MYSQL_DATABASE: savvylingua
     ports:
       - "3307:3306"
     networks:
