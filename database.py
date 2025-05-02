@@ -16,6 +16,8 @@ def insert_ocr_text(file_path, language="Korean", is_public=True):
         print(f"File not found: {file_path}")
         return
 
+    cursor = None
+    db = None
     try:
         db = get_db_connection()
         cursor = db.cursor()
@@ -53,4 +55,3 @@ def insert_ocr_text(file_path, language="Korean", is_public=True):
 
 if __name__ == "__main__":
     insert_ocr_text("OCR results.txt")
-h
