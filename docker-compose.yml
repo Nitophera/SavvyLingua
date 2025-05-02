@@ -5,14 +5,14 @@ services:
     image: mysql:8.0
     container_name: mysql-savvylingua
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: savvylingua
+      MYSQL_ROOT_PASSWORD: ""  # No password for root user
+      MYSQL_DATABASE: savvylingua  # Automatically creates the database 'savvylingua'
     ports:
-      - "3307:3306"
+      - "3307:3306"  # Expose MySQL port 3306 to the host as 3307
     networks:
       - savvy_network
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  # Persist MySQL data
 
 volumes:
   mysql_data:
