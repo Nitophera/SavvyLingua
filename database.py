@@ -3,52 +3,38 @@ from datetime import datetime
 import os
 
 def get_db_connection():
-    try:
-        # Use the correct password here
-        return mysql.connector.connect(
-            host="127.0.0.1",
-            port=3307,
-            user="root",
-            password="root",  # Add the password here
-            database="savvylingua"
-        )
-    except mysql.connector.Error as err:
-        print(f"Error connecting to MySQL: {err}")
-        return None
+    return mysql.connector.connect(
+        host="127.0.0.1",
+        port=3307,  
+        user="root",
+        password="",
+        database="savvylingua"
+    )
 
 def insert_ocr_text(file_path, language="Korean", is_public=True):
     if not os.path.exists(file_path):
         print(f"File not found: {file_path}")
         return
 
-    db = None
-    cursor = None
-
     try:
         db = get_db_connection()
-        if db is None:
-            print("Failed to connect to the database.")
-            return
-
         cursor = db.cursor()
 
         with open(file_path, "r", encoding="utf-8") as file:
             text = file.read().strip()
 
-        # Insert document record
-        cursor.execute(""" 
-            INSERT INTO Documents (FileName, Language, UploadDate, IsPublic) 
+        cursor.execute("""
+            INSERT INTO Documents (FileName, Language, UploadDate, IsPublic)
             VALUES (%s, %s, %s, %s)
         """, (
             os.path.basename(file_path),
             language,
             datetime.now(),
-            int(is_public)
+            int(is_public)  
         ))
 
         document_id = cursor.lastrowid
 
-        # Insert extracted text
         cursor.execute("""
             INSERT INTO ExtractedTexts (DocumentID, OriginalText)
             VALUES (%s, %s)
