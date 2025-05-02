@@ -5,7 +5,6 @@ services:
     image: mysql:8.0
     container_name: mysql-savvylingua
     environment:
-      MYSQL_ROOT_PASSWORD: ""
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: savvylingua
     ports:
@@ -14,6 +13,17 @@ services:
       - savvy_network
     volumes:
       - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: python-app
+    networks:
+      - savvy_network
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+    command: ["python", "database.py"]
 
 volumes:
   mysql_data:
