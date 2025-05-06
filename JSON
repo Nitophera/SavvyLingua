@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OCR and reading text files</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #result { white-space: pre-wrap; background: #f9f9f9; padding: 10px; border-radius: 6px; }
+    input[type="file"] { margin-bottom: 10px; }
+    button { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>📚 upload in txt or image</h1>
+  <p>image → OCR / text file → JSON </p>
+
+  <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.txt">
+  <button onclick="processFile()">file processing</button>
+  <button onclick="downloadResult()">📥 Save results (.txt)</button>
+
+  <h2>🔍 results (JSON )</h2>
+  <div id="result">You will see the results here.</div>
+
+  <script>
+    let lastJson = null; 
+
+    function processFile() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) {
+        alert("Select a file.");
+        return;
+      }
+
+      const extension = file.name.split('.').pop().toLowerCase();
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        if (extension === 'txt') {
+          const textContent = reader.result.trim();
+          const jsonResult = {
+            filename: file.name,
+            file_type: 'text',
+            extracted_text: textContent,
+            timestamp: new Date().toISOString()
+          };
+          lastJson = jsonResult;
+          document.getElementById('result').textContent = JSON.stringify(jsonResult, null, 2);
+        } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
+          const imageData = reader.result;
+          Tesseract.recognize(
+            imageData,
+            'eng',             {
+              logger: m => console.log(m)
+            }
+          ).then(({ data: { text } }) => {
+            const jsonResult = {
+              filename: file.name,
+              file_type: 'image',
+              extracted_text: text.trim(),
+              timestamp: new Date().toISOString()
+            };
+            lastJson = jsonResult;
+            document.getElementById('result').textContent = JSON.stringify(jsonResult, null, 2);
+          });
+        } else {
+          alert("Unsupported file format.");
+        }
+      };
+
+      if (extension === 'txt') {
+        reader.readAsText(file, 'UTF-8');
+      } else {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function downloadResult() {
+      if (!lastJson) {
+        alert("Please process the file first.");
+        return;
+      }
+      const blob = new Blob([JSON.stringify(lastJson, null, 2)], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = lastJson.filename.replace(/\.[^/.]+$/, "") + "_result.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
