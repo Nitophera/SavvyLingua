@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>OCR and File Reader</title>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <style>
     body {
       padding: 20px;
@@ -93,11 +91,14 @@
   <button onclick="processFile()">Run OCR / Process File</button>
   <button onclick="downloadResult()">Download Result (.txt)</button>
 
+  <br>
+  <div id="statusMessage" style="margin: 10px; font-weight: bold; color: #2c5282;"></div>
+
   <h2>Extracted Result (JSON Format)</h2>
   <div id="result">The extracted result will appear here.</div>
 
   <script>
-    let lastJson = null;
+    let lastResult = null;
 
     function previewFile() {
       const file = document.getElementById("fileInput").files[0];
@@ -116,12 +117,21 @@
       }
     }
 
+    function setLoadingState(isLoading) {
+      const status = document.getElementById('statusMessage');
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(btn => btn.disabled = isLoading);
+      status.textContent = isLoading ? "Processing file, please wait..." : "";
+    }
+
     function processFile() {
       const file = document.getElementById('fileInput').files[0];
       if (!file) {
         alert("Select a file.");
         return;
       }
+
+      setLoadingState(true);
 
       const formData = new FormData();
       formData.append("document", file);
@@ -132,42 +142,33 @@
       })
       .then(response => response.json())
       .then(data => {
+        setLoadingState(false);
         if (data.document_id) {
+          lastResult = data.document_id;
           document.getElementById('result').textContent = JSON.stringify(data, null, 2);
         } else {
           document.getElementById('result').textContent = "Error: " + JSON.stringify(data);
         }
       })
       .catch(error => {
-        console.error("Error:", error);
-        document.getElementById('result').textContent = "Upload failed.";
+        setLoadingState(false);
+        document.getElementById('result').textContent = "Upload failed: " + error.message;
       });
     }
 
-    function setResult(filename, type, text) {
-      lastJson = {
-        filename: filename,
-        file_type: type,
-        extracted_text: text,
-        timestamp: new Date().toISOString()
-      };
-      document.getElementById('result').textContent = JSON.stringify(lastJson, null, 2);
-    }
-
     function downloadResult() {
-      if (!lastJson) {
+      if (!lastResult) {
         alert("Please process the file first.");
         return;
       }
-      const blob = new Blob([JSON.stringify(lastJson, null, 2)], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
+
+      const downloadUrl = `/download/${lastResult}`;
       const link = document.createElement('a');
-      link.href = url;
-      link.download = lastJson.filename.replace(/\.[^/.]+$/, "") + "_result.txt";
+      link.href = downloadUrl;
+      link.download = `document_${lastResult}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
     }
   </script>
 

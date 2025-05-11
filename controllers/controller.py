@@ -12,20 +12,23 @@ def index():
 
 @document_blueprint.route('/upload', methods=['POST'])
 def upload_file():
-    if 'document' not in request.files:
-        return 'No file part', 400
-    file = request.files['document']
-    if file.filename == '':
-        return 'No selected file', 400
-    if file:
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filepath)
+    try:
+        if 'document' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+        file = request.files['document']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+        if file:
+            filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(filepath)
 
-        extracted_text = call_ocr_api(filepath)
-        document_id = insert_document(file.filename)
-        insert_extracted_text(document_id, extracted_text)
+            extracted_text = call_ocr_api(filepath)
+            document_id = insert_document(file.filename)
+            insert_extracted_text(document_id, extracted_text)
 
-        return jsonify({"message": "Upload successful", "document_id": document_id})
+            return jsonify({"message": "Upload successful", "document_id": document_id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @document_blueprint.route('/download/<int:document_id>', methods=['GET'])
 def download_json(document_id):
