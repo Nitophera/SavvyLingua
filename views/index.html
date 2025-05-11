@@ -123,53 +123,25 @@
         return;
       }
 
-      const extension = file.name.split('.').pop().toLowerCase();
-      const reader = new FileReader();
+      const formData = new FormData();
+      formData.append("document", file);
 
-      if (extension === 'txt') {
-        reader.onload = function () {
-          const textContent = reader.result.trim();
-          setResult(file.name, 'text', textContent);
-        };
-        reader.readAsText(file, 'UTF-8');
-
-      } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
-        reader.onload = function () {
-          Tesseract.recognize(
-            reader.result,
-            'eng',
-            { logger: m => console.log(m) }
-          ).then(({ data: { text } }) => {
-            setResult(file.name, 'image', text.trim());
-          });
-        };
-        reader.readAsDataURL(file);
-
-      } else if (extension === 'pdf') {
-        reader.onload = function () {
-          const typedarray = new Uint8Array(reader.result);
-          pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-            let textPromises = [];
-            for (let i = 1; i <= pdf.numPages; i++) {
-              textPromises.push(
-                pdf.getPage(i).then(page => {
-                  return page.getTextContent().then(content => {
-                    return content.items.map(item => item.str).join(' ');
-                  });
-                })
-              );
-            }
-            Promise.all(textPromises).then(pagesText => {
-              const allText = pagesText.join('\n\n').trim();
-              setResult(file.name, 'pdf', allText);
-            });
-          });
-        };
-        reader.readAsArrayBuffer(file);
-
-      } else {
-        alert("Unsupported file format.");
-      }
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.document_id) {
+          document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        } else {
+          document.getElementById('result').textContent = "Error: " + JSON.stringify(data);
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        document.getElementById('result').textContent = "Upload failed.";
+      });
     }
 
     function setResult(filename, type, text) {
