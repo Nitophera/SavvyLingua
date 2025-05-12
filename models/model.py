@@ -27,3 +27,12 @@ def get_text_by_document_id(document_id):
     cursor.close()
     db.close()
     return rows
+
+def get_all_documents():
+    db = get_db_connection()  # Use MySQL connection
+    cursor = db.cursor()
+    cursor.execute("SELECT DocumentID, FileName FROM documents")  # Update column name if needed
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results

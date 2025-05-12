@@ -52,4 +52,4 @@ def insert_ocr_text(file_path, language="Korean", is_public=True):
             db.close()
 
 if __name__ == "__main__":
-    insert_ocr_text("OCR results.txt")
+    insert_ocr_text("ParsedResult.txt")

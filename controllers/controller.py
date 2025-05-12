@@ -1,7 +1,12 @@
 from flask import Blueprint, request, jsonify, render_template, current_app, send_file
 import os
 import json
-from models.model import insert_document, insert_extracted_text, get_text_by_document_id
+from models.model import (
+    insert_document,
+    insert_extracted_text,
+    get_text_by_document_id,
+    get_all_documents  # <-- make sure this exists
+)
 from ocr.ocr_api import call_ocr_api
 
 document_blueprint = Blueprint('document_controller', __name__)
@@ -41,3 +46,11 @@ def download_json(document_id):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     return send_file(json_path, as_attachment=True)
+
+@document_blueprint.route('/public', methods=['GET'])
+def public_documents():
+    try:
+        documents = get_all_documents()
+        return render_template('public_documents.html', documents=documents)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
