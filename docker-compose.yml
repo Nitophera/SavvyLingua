@@ -5,25 +5,32 @@ services:
     image: mysql:8.0
     container_name: mysql-savvylingua
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: savvylingua
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-      - "3307:3306"
+      - "3306:3306"
     networks:
       - savvy_network
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  app:
+  web:
     build: .
-    container_name: python-app
+    container_name: flask-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
     networks:
       - savvy_network
     volumes:
       - .:/app
-    depends_on:
-      - mysql
-    command: ["python", "database.py"]
 
 volumes:
   mysql_data:

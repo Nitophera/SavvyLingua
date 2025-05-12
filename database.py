@@ -1,55 +1,46 @@
+import time
 import mysql.connector
-from datetime import datetime
-import os
+from mysql.connector import Error
 
-def get_db_connection():
-    return mysql.connector.connect(
-        host="127.0.0.1",
-        port=3307,  
-        user="root",
-        password="",
-        database="savvylingua"
-    )
+def get_db_connection(retries=5, delay=3):
+    for attempt in range(retries):
+        try:
+            return mysql.connector.connect(
+                host="mysql",
+                port=3306,
+                user="root",
+                password="",
+                database="savvylingua"
+            )
+        except Error as e:
+            print(f"Attempt {attempt+1} failed: {e}")
+            time.sleep(delay)
+    raise Exception("Could not connect to the database after several attempts.")
 
-def insert_ocr_text(file_path, language="Korean", is_public=True):
-    if not os.path.exists(file_path):
-        print(f"File not found: {file_path}")
-        return
+def initialize_tables():
+    db = get_db_connection()
+    cursor = db.cursor()
 
-    try:
-        db = get_db_connection()
-        cursor = db.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Documents (
+            DocumentID INT AUTO_INCREMENT PRIMARY KEY,
+            FileName VARCHAR(255),
+            Language VARCHAR(50) DEFAULT 'Korean',
+            UploadDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            IsPublic BOOLEAN DEFAULT TRUE
+        )
+    """)
 
-        with open(file_path, "r", encoding="utf-8") as file:
-            text = file.read().strip()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ExtractedTexts (
+            TextID INT AUTO_INCREMENT PRIMARY KEY,
+            DocumentID INT,
+            OriginalText LONGTEXT,
+            CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (DocumentID) REFERENCES Documents(DocumentID) ON DELETE CASCADE
+        )
+    """)
 
-        cursor.execute("""
-            INSERT INTO Documents (FileName, Language, UploadDate, IsPublic)
-            VALUES (%s, %s, %s, %s)
-        """, (
-            os.path.basename(file_path),
-            language,
-            datetime.now(),
-            int(is_public)  
-        ))
-
-        document_id = cursor.lastrowid
-
-        cursor.execute("""
-            INSERT INTO ExtractedTexts (DocumentID, OriginalText)
-            VALUES (%s, %s)
-        """, (document_id, text))
-
-        db.commit()
-        print(f"Text inserted successfully for file '{file_path}'.")
-
-    except mysql.connector.Error as err:
-        print(f"Database error: {err}")
-    finally:
-        if cursor:
-            cursor.close()
-        if db:
-            db.close()
-
-if __name__ == "__main__":
-    insert_ocr_text("ParsedResult.txt")
+    db.commit()
+    cursor.close()
+    db.close()

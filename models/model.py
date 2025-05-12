@@ -28,11 +28,25 @@ def get_text_by_document_id(document_id):
     db.close()
     return rows
 
+# def get_all_documents():
+#     db = get_db_connection() 
+#     cursor = db.cursor()
+#     cursor.execute("SELECT DocumentID, FileName FROM documents")  # Update column name if needed
+#     results = cursor.fetchall()
+#     cursor.close()
+#     db.close()
+#     return results
+
 def get_all_documents():
-    db = get_db_connection()  # Use MySQL connection
+    db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT DocumentID, FileName FROM documents")  # Update column name if needed
-    results = cursor.fetchall()
+    cursor.execute("""
+        SELECT d.DocumentID, d.FileName, d.UploadDate, e.OriginalText
+        FROM Documents d
+        LEFT JOIN ExtractedTexts e ON d.DocumentID = e.DocumentID
+        ORDER BY d.UploadDate DESC
+    """)
+    rows = cursor.fetchall()
     cursor.close()
     db.close()
-    return results
+    return rows
