@@ -1,62 +1,41 @@
 # SavvyLingua
 
-This is a simple **Flask web application** that allows users to upload document in underpreserved languages, extract text using the **OCR.Space API**, and store the results in a **MySQL database**. Users can also download the extracted text as a JSON file.
+**SavvyLingua** is a Dockerized Flask web application that allows users to upload documents in underpreserved language (Jeju), extract text using **OCR.Space**, and store results in a **MySQL database**. The extracted text can be viewed and downloaded as JSON.
 
 ## Features
 
-- Upload documents in . format
-- Extract text from images using OCR
-- Store uploaded documents and extracted text in MySQL
-- Download extracted text in `.json` format
+- Upload `.png`, `.jpg`, `.jpeg`, `.pdf` files
+- Extract text using OCR.Space API
+- Store files and OCR results in a MySQL database
+- View public documents
+- Download OCR results as `.json`
 
+---
 
-## Prerequisites
+## Running with Docker
 
-- Python 3.8+
-- MySQL (e.g., XAMPP or local MySQL server)
-- An OCR.Space API key
+### Prerequisites
 
-## Installation
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/Nitophera/SavvyLingua
-    ```
-
-2. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-3. Create the MySQL database and tables:
-    ```sql
-    CREATE DATABASE SavvyLingua;
-
-    USE SavvyLingua;
-
-    CREATE TABLE Documents (
-        DocumentID INT AUTO_INCREMENT PRIMARY KEY,
-        FileName VARCHAR(255),
-        Language VARCHAR(255),
-        UploadDate DATETIME,
-        IsPublic BOOLEAN
-    );
-
-    CREATE TABLE ExtractedTexts (
-        TextID INT AUTO_INCREMENT PRIMARY KEY,
-        DocumentID INT,
-        OriginalText LONGTEXT,
-        FOREIGN KEY (DocumentID) REFERENCES Documents(DocumentID)
-    );
-    ```
-
-4. Set Up the `.env` File
-    Create a file named .env in the root directory and add:
-    ```python
-    OCR_API_KEY=your_ocr_api_key_here
-    ```
-
-## Running the App
+### 1. Clone the repo
 
 ```bash
-python app.py```
+git clone https://github.com/Nitophera/SavvyLingua
+cd SavvyLingua
+```
+### 2. Set up environment variables
+Create a .env file with your OCR.Space API key (only if using the online API):
+
+```bash
+OCR_API_KEY=your_api_key_here
+```
+
+### 3. Run the app
+
+```bash
+docker-compose up --build
+```
+
+### 4. Visit http://localhost:5000

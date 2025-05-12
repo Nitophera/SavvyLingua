@@ -1,3 +1,5 @@
+Temp/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -21,6 +23,7 @@ Thumbs.db
 
 # Logs and databases
 *.log
+db_data/
 
 # Python egg
 *.egg-info/

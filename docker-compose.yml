@@ -12,7 +12,7 @@ services:
     networks:
       - savvy_network
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./db_data:/var/lib/mysql # bind mount: this will persist even with down -v
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -31,9 +31,7 @@ services:
       - savvy_network
     volumes:
       - .:/app
-
-volumes:
-  mysql_data:
+      - ./uploads:/app/uploads  # sync with uploads/ folder on disk
 
 networks:
   savvy_network:

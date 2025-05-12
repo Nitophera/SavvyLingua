@@ -31,7 +31,11 @@ def upload_file():
             document_id = insert_document(file.filename)
             insert_extracted_text(document_id, extracted_text)
 
-            return jsonify({"message": "Upload successful", "document_id": document_id})
+            return jsonify({
+                "document_id": document_id,
+                "filename": file.filename,
+                "text": extracted_text
+            })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
