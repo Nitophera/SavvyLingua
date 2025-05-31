@@ -7,7 +7,8 @@ from models.model import (
     get_text_by_document_id,
     get_all_documents  # <-- make sure this exists
 )
-from ocr.ocr_api import call_ocr_api
+# from ocr.ocr_api import call_ocr_api
+from ocr.new_ocr import call_ocr_api
 
 document_blueprint = Blueprint('document_controller', __name__)
 
