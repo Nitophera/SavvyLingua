@@ -229,17 +229,16 @@ input[type="file"]:valid + .file-label::after {
 
   <div class="container">
     <div class="upload-area">
-  <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.pdf" />
+  <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.pdf" onchange="previewFile()"/>
   <label for="fileInput" class="file-label">
-    📂 Click or Drag & Drop your file here
+    📂 Click here to upload file
   </label>
+  <img id="imagePreview" class="preview-image" src="" alt="Preview">
   <p class="supported">Accepted: image or PDF file </p>
 </div>
-    <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.pdf" onchange="previewFile()">
-    <img id="imagePreview" class="preview-image" src="" alt="Preview">
 
     <div class="actions">
-      <button class="btn btn-process" onclick="processFile()">🚀 Run OCR</button>
+      <button class="btn btn-process" onclick="processFile()">Run OCR</button>
       <button class="btn btn-download" onclick="downloadResult()">⬇️ Download Result</button>
     </div>
 
@@ -249,7 +248,7 @@ input[type="file"]:valid + .file-label::after {
   </div>
 
   <footer>
-    &copy; 2025 SavvyLingua — Built with care for smarter document management
+    &copy; 2025 SavvyLingua — Built with care
   </footer>
 
   <script>
@@ -258,6 +257,9 @@ input[type="file"]:valid + .file-label::after {
     function previewFile() {
       const file = document.getElementById("fileInput").files[0];
       const preview = document.getElementById("imagePreview");
+      const label = document.getElementsByClassName("file-label")[0];
+      label.textContent = file ? `📂 ${file.name}` : "📂 Click here to upload file";
+      // console.log(file.type);
 
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
