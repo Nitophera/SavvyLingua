@@ -1,102 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>OCR and File Reader</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SavvyLingua – OCR & Text Extractor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063826.png">
   <style>
-    body {
-      padding: 20px;
-      color: #333;
-      text-align: center;
+    :root {
+      --brand: #2b6cb0;
+      --accent: #38a169;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1a202c;
+      --subtext: #4a5568;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    h1 {
-      color: #2f855a;
-      font-size: 1.8em;
-      margin-bottom: 10px;
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(to right, #2b6cb0, #38a169);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo img {
+      height: 36px;
+    }
+
+    .logo h1 {
+      font-size: 1.6em;
+      margin: 0;
+    }
+
+    .btn-header {
+      background-color: white;
+      color: var(--brand);
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-header:hover {
+      background-color: #e2e8f0;
+      transform: scale(1.05);
+    }
+
+    .hero {
+      background-color: #f0f4f8;
+      color: #1a202c;
+      text-align: center;
+      padding: 80px 20px 60px;
+    }
+
+    .hero h2 {
+      font-size: 2.6em;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.2em;
+      color: var(--subtext);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+   .upload-area {
+  background: var(--card);
+  border: 2px dashed var(--brand);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: 0.3s;
+  position: relative;
+}
+
+input[type="file"]:valid + .file-label::after {
+  display: block;
+}
+
+    .upload-area:hover {
+      background-color: #ebf8ff;
+      transform: scale(1.01);
     }
 
     input[type="file"] {
-      padding: 10px;
-      border: 2px dashed #90cdf4;
-      border-radius: 10px;
-      background-color: #ebf8ff;
+      display: none;
+    }
+
+    .upload-area label {
+      font-weight: 600;
+      font-size: 1.2em;
       cursor: pointer;
-      margin-bottom: 15px;
     }
 
-    button {
-      border: none;
-      padding: 10px 20px;
-      margin: 5px 0;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
+    .supported {
+      font-size: 0.95em;
+      color: var(--subtext);
     }
 
-    button:first-of-type {
-      background-color: #38a169;
-      color: white;
-    }
-
-    button:last-of-type {
-      background-color: #2b6cb0;
-      color: white;
-    }
-
-    .image-preview {
+    .preview-image {
       max-width: 300px;
-      margin: 15px 0;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
     }
 
-    #result {
-      background-color: #fefcbf;
-      border: 1px solid #ecc94b;
-      border-radius: 10px;
-      padding: 15px;
-      white-space: pre-wrap;
-      margin-top: 10px;
-      text-align: left;
-    }
-
-    h2 {
-      color: #2c5282;
+    .actions {
+      text-align: center;
       margin-top: 30px;
     }
 
-    .emoji-title {
-      font-size: 1.2em;
+    .btn {
+      padding: 14px 28px;
+      border: none;
+      font-weight: 600;
+      border-radius: 10px;
+      margin: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: var(--shadow);
     }
 
-    .btn-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 200px;
+    .btn-process {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-process:hover {
+      background-color: #2f855a;
+      transform: scale(1.05);
+    }
+
+    .btn-download {
+      background-color: var(--brand);
+      color: white;
+    }
+
+    .btn-download:hover {
+      background-color: #2c5282;
+      transform: scale(1.05);
+    }
+
+    #statusMessage {
+      text-align: center;
+      font-weight: bold;
+      color: var(--brand);
+      margin-top: 20px;
+    }
+
+    .result {
+      background-color: #fffff0;
+      border: 1px solid #ecc94b;
+      border-radius: 16px;
+      padding: 25px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      max-height: 450px;
+      margin-top: 30px;
+      font-family: monospace;
+      box-shadow: var(--shadow);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 0.95em;
+      color: var(--subtext);
+    }
+
+    @media (max-width: 600px) {
+      .btn {
+        width: 100%;
+        margin: 10px 0;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/3063/3063826.png" alt="Logo">
+      <h1>SavvyLingua</h1>
+    </div>
+    <a href="/public" class="btn-header">📄 Public Documents</a>
+  </header>
 
-  <h1>SavvyLingua</h1>
-  <a href="/public" style="float: right; margin-top: -30px;">📄 Public Documents</a>
-  <p>Upload a book photo, text, or PDF file to extract text automatically.</p>
+  <section class="hero">
+    <h2>SavvyLingua</h2>
+    <p>Upload a PDF or TXT file to extract text automatically.</p>
+  </section>
 
-  <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.txt,.pdf" onchange="previewFile()">
-  <br><br>
-  <center><img id="imagePreview" class="image-preview" src="" alt="Image preview" style="display: none;"></center>
-  <br>
+  <div class="container">
+    <div class="upload-area">
+  <input type="file" id="fileInput" accept=".pdf,.txt" />
+  <label for="fileInput" class="file-label">
+    📂 Click or Drag & Drop your file here
+  </label>
+  <p class="supported">Accepted: PDF and TXT</p>
+</div>
+    <input type="file" id="fileInput" accept=".pdf,.txt" onchange="previewFile()">
+    <img id="imagePreview" class="preview-image" src="" alt="Preview">
 
-  <button onclick="processFile()">Run OCR / Process File</button>
-  <button onclick="downloadResult()">Download Result (.txt)</button>
+    <div class="actions">
+      <button class="btn btn-process" onclick="processFile()">🚀 Run OCR</button>
+      <button class="btn btn-download" onclick="downloadResult()">⬇️ Download Result</button>
+    </div>
 
-  <br>
-  <div id="statusMessage" style="margin: 10px; font-weight: bold; color: #2c5282;"></div>
+    <div id="statusMessage"></div>
 
-  <h2>Extracted Result (JSON Format)</h2>
-  <div id="result">The extracted result will appear here.</div>
+    <div id="result" class="result">The extracted result will appear here.</div>
+  </div>
+
+  <footer>
+    &copy; 2025 SavvyLingua — Built with care for smarter document management
+  </footer>
 
   <script>
     let lastResult = null;
@@ -107,38 +261,35 @@
 
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
-        reader.onloadend = function () {
+        reader.onloadend = () => {
           preview.src = reader.result;
           preview.style.display = "block";
         };
         reader.readAsDataURL(file);
       } else {
-        preview.src = "";
         preview.style.display = "none";
       }
     }
 
     function setLoadingState(isLoading) {
-      const status = document.getElementById('statusMessage');
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach(btn => btn.disabled = isLoading);
-      status.textContent = isLoading ? "Processing file, please wait..." : "";
+      const status = document.getElementById("statusMessage");
+      document.querySelectorAll(".btn").forEach(btn => btn.disabled = isLoading);
+      status.textContent = isLoading ? "⏳ Processing file..." : "";
     }
 
     function processFile() {
-      const file = document.getElementById('fileInput').files[0];
+      const file = document.getElementById("fileInput").files[0];
       if (!file) {
-        alert("Select a file.");
+        alert("Please select a file first.");
         return;
       }
 
       setLoadingState(true);
-
       const formData = new FormData();
       formData.append("document", file);
 
-      fetch('/upload', {
-        method: 'POST',
+      fetch("/upload", {
+        method: "POST",
         body: formData
       })
       .then(response => response.json())
@@ -146,25 +297,25 @@
         setLoadingState(false);
         if (data.document_id) {
           lastResult = data.document_id;
-          document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+          document.getElementById("result").textContent = JSON.stringify(data, null, 2);
         } else {
-          document.getElementById('result').textContent = "Error: " + JSON.stringify(data);
+          document.getElementById("result").textContent = "Error: " + JSON.stringify(data);
         }
       })
       .catch(error => {
         setLoadingState(false);
-        document.getElementById('result').textContent = "Upload failed: " + error.message;
+        document.getElementById("result").textContent = "Upload failed: " + error.message;
       });
     }
 
     function downloadResult() {
       if (!lastResult) {
-        alert("Please process the file first.");
+        alert("Please process a file first.");
         return;
       }
 
       const downloadUrl = `/download/${lastResult}`;
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = `document_${lastResult}.json`;
       document.body.appendChild(link);
@@ -172,6 +323,5 @@
       document.body.removeChild(link);
     }
   </script>
-
 </body>
 </html>
